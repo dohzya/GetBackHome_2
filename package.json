@@ -1,0 +1,17 @@
+{
+  "name": "getbackhome",
+  "version": "0.1.0",
+  "description": "Get Back Home",
+  "main": "main.js",
+  "dependencies": {
+    "seedrandom": "^2.4.2"
+  },
+  "devDependencies": {
+    "seedrandom": "^2.4.2",
+    "ts-loader": "^0.8.2",
+    "typescript": "^2.0.3",
+    "webpack": "^1.13.2"
+  },
+  "author": "Étienne Vallette d'Osia",
+  "license": "ISC"
+}

@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "target": "es5"
+  },/*
+  "exclude": [
+    "node_modules"
+  ],*/
+  "filesGlob": [
+    "./definitions/*.d.ts"
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "seedrandom": ["definitions/seedrandom.d.ts"]
+    }
+  }
+}
