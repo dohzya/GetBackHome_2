@@ -1,0 +1,126 @@
+import models from './models';
+import ui from './ui';
+
+import Random from './ext/random';
+const seed = '12345'
+const rng = Random(seed);
+const {genBiome, genStructure} = models.Generators(rng);
+
+const team = new models.Team(new models.Position(2, 6))
+  .addPerson(models.Person.random(rng))
+  .addPerson(models.Person.random(rng))
+  .addPerson(models.Person.random(rng))
+  .move(1, 2);
+
+const MAXQ = 20;
+const MAXR = 20;
+const SIZE = 40;
+
+models.Grid = class {
+  constructor() {
+    this.zones = [];
+  }
+  get(q, r) {
+    return this[models.Position.buildKey(q, r)];
+  }
+  addZone(zone) {
+    const key = zone.position.key();
+    this.zones.push(zone);
+    this[key] = zone;
+  }
+}
+
+let grid = new models.Grid()
+for (let q = -Math.floor(MAXQ/2); q < MAXQ; ++q) {
+  for (let r = -Math.floor(MAXR/2); r < MAXR; ++r) {
+    grid.addZone(new models.Zone(new models.Position(q, r), genBiome(q, r), genStructure(q, r)))
+  }
+}
+
+function zoneColor(zone) {
+  switch (zone.biome) {
+    case models.Zone.Biome.Water: return '127, 169, 181';
+    case models.Zone.Biome.Swamp: return '105, 74, 68';
+    case models.Zone.Biome.Plain: return '127, 168, 79';
+    case models.Zone.Biome.Mountainous: return '127, 127, 127';
+    default: return '0, 0, 0';
+  }
+}
+function zonePicture(zone) {
+  switch (zone.structure) {
+    case models.Zone.Structure.City: return 'City';
+    case models.Zone.Structure.Forest: return 'Forest';
+    case models.Zone.Structure.Field: return 'Field';
+    case models.Zone.Structure.Mountains: return 'Mount';
+    default: return '';
+  }
+}
+export function zone2tile(timedZone, size, currentTS) {
+  const time = timedZone.time;
+  const zone = timedZone.item;
+  return new ui.Tile(
+    zone.position,
+    size,
+    zoneColor(zone),
+    zonePicture(zone),
+    currentTS - time
+  );
+}
+
+function start(canvas) {
+  const view = new ui.View(canvas, SIZE)
+  let TS = 1;
+
+  let snapshot = new models.Snapshot()
+  for (let i = -Math.floor(MAXQ/2); i < MAXQ; ++i) {
+    for (let j = -Math.floor(MAXR/2); j < MAXR; ++j) {
+      snapshot.addZone(grid.get(i, j), TS)
+    }
+  }
+
+  TS += 10;
+
+  function redraw() {
+    const tiles = snapshot.all().map(timedZone => zone2tile(timedZone, SIZE, TS))
+    view.redraw(tiles);
+  }
+  redraw();
+
+  let mouseMoved = false;
+  let oldMousePoint = undefined;
+  function eventPoint(e) {
+    return new ui.Point(e.clientX, e.clientY);
+  }
+  canvas.onmousedown = function (e) {
+    oldMousePoint = eventPoint(e);
+    mouseMoved = false;
+  };
+  canvas.onmousemove = function (e) {
+    if (oldMousePoint) {
+      const newMousePoint = eventPoint(e);
+      const diff = newMousePoint.diff(oldMousePoint);
+      if (mouseMoved || Math.abs(diff.x) + Math.abs(diff.y) > 10) {
+        mouseMoved = true;
+        oldMousePoint = newMousePoint;
+        view.move(diff);
+        redraw();
+      }
+    }
+  }
+  canvas.onmouseup = function (e) {
+    oldMousePoint = undefined;
+    if (mouseMoved) {
+      mouseMoved = false;
+    } else {
+      const {q, r} = view.getPosition(e);
+      const zone = grid.get(q, r);
+      snapshot.addZone(zone, TS)
+      TS++;
+      redraw();
+    }
+  }
+}
+
+window.GetBackHome = {
+  start,
+}

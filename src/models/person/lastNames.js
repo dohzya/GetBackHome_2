@@ -1,5 +1,3 @@
-import Random from "../Rc4Random";
-
 const all = [
   "Abalone",
   "Abalones",
@@ -1921,7 +1919,7 @@ const all = [
   "Zoos",
 ];
 
-export default function random(): string {
-  const index = Random.random(all.length);
+export default function random(rng) {
+  const index = rng(all.length);
   return all[index];
 }

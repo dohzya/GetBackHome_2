@@ -1,12 +1,10 @@
-import Random from "../Rc4Random";
+const Sex = {
+    Male: 1,
+    Female: 2,
+    Either: 3,
+};
 
-enum Sex {
-    Male = 1,
-    Female,
-    Either,
-}
-
-const all: [string, Sex][] = [
+const all = [
   ["Abel", Sex.Male],
   ["Absolon", Sex.Male],
   ["Achille", Sex.Male],
@@ -583,14 +581,14 @@ const all: [string, Sex][] = [
   ["Zoé", Sex.Female],
 ];
 
-export default function random(): [string, boolean] {
-  const index = Random.random(all.length);
+export default function random(rng) {
+  const index = rng(all.length);
   const [name, sex] = all[index];
-  let isMale: boolean;
+  let isMale;
   switch (sex) {
     case Sex.Male: isMale = true; break;
     case Sex.Female: isMale = false; break;
-    default: isMale = Random.random() < 0.5; break;
+    default: isMale = rng() < 0.5; break;
   }
   return [name, isMale];
 }
