@@ -31,8 +31,10 @@ models.Grid = class {
 }
 
 let grid = new models.Grid()
-for (let q = -Math.floor(MAXQ/2); q < MAXQ; ++q) {
-  for (let r = -Math.floor(MAXR/2); r < MAXR; ++r) {
+for (let j = 0; j < MAXR; ++j) {
+  for (let i = 0-(Math.floor(j/2)); i < MAXQ-(Math.floor(j/2)); ++i) {
+    const q = i - Math.floor(MAXQ / 2);
+    const r = j - Math.floor(MAXR / 2);
     grid.addZone(new models.Zone(new models.Position(q, r), genBiome(q, r), genStructure(q, r)))
   }
 }
