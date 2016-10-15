@@ -19,8 +19,8 @@ function getWidth() {
 
 export default class View {
   constructor(canvas, size) {
-    const width = getWidth()
-    const height = getHeight()
+    const width = Math.floor(getWidth() * 0.8);
+    const height = getHeight();
     canvas.setAttribute("width", width + "px");
     canvas.setAttribute("height", height + "px");
 
