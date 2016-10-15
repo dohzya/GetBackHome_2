@@ -71,11 +71,9 @@ function start(canvas) {
   const view = new ui.View(canvas, SIZE)
   let TS = 1;
 
-  let snapshot = new models.Snapshot()
-  for (let i = -Math.floor(MAXQ/2); i < MAXQ; ++i) {
-    for (let j = -Math.floor(MAXR/2); j < MAXR; ++j) {
-      snapshot.addZone(grid.get(i, j), TS)
-    }
+  let snapshot = new models.Snapshot();
+  for (let zone of grid.zones) {
+    snapshot.addZone(zone, TS);
   }
 
   TS += 10;
