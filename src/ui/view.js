@@ -78,10 +78,15 @@ export default class View {
       this.ctx.textBaseline = 'middle';
       this.ctx.fillText(tile.picture, this.localToGlobalX(tile.center.x), this.localToGlobalY(tile.center.y));
 
+      // display height (debug)
+      this.ctx.font = Math.round(this.size/4) + 'px Arial';
+      this.ctx.textBaseline = 'bottom';
+      this.ctx.fillText(tile.height, this.localToGlobalX(tile.center.x), this.localToGlobalY(tile.center.y) - 10);
+
       // display position (debug)
-      this.ctx.font = '10px Arial';
+      this.ctx.font = Math.round(this.size/4) + 'px Arial';
       this.ctx.textBaseline = 'top';
-      this.ctx.fillText(`${tile.position.q}:${tile.position.r}`, this.localToGlobalX(tile.center.x), this.localToGlobalY(tile.center.y) + 5);
+      this.ctx.fillText(`${tile.position.q}:${tile.position.r}`, this.localToGlobalX(tile.center.x), this.localToGlobalY(tile.center.y) + 10);
     }
   }
   getPosition(globalPt) {

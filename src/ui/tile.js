@@ -3,9 +3,10 @@ import Hex from '../hex';
 import Point from './point';
 
 export default class Tile {
-  constructor(position, size, color, picture, age) {
+  constructor(position, size, height, color, picture, age) {
     this.position = position;
     this.size = size;
+    this.height = height;
     this.color = color;
     this.picture = picture;
     this.age = age;

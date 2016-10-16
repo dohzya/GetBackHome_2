@@ -4,7 +4,7 @@ import ui from './ui';
 import Random from './ext/random';
 const seed = '12345'
 const rng = Random(seed);
-const {genBiome, genStructure} = models.Generators(rng);
+const {genHeight, genBiome, genStructure} = models.Generators(rng);
 
 const team = new models.Team(new models.Position(2, 6))
   .addPerson(models.Person.random(rng))
@@ -14,7 +14,7 @@ const team = new models.Team(new models.Position(2, 6))
 
 const MAXQ = 20;
 const MAXR = 20;
-const SIZE = 40;
+const SIZE = 20;
 
 models.Grid = class {
   constructor() {
@@ -35,7 +35,10 @@ for (let j = 0; j < MAXR; ++j) {
   for (let i = 0-(Math.floor(j/2)); i < MAXQ-(Math.floor(j/2)); ++i) {
     const q = i - Math.floor(MAXQ / 2);
     const r = j - Math.floor(MAXR / 2);
-    grid.addZone(new models.Zone(new models.Position(q, r), genBiome(q, r), genStructure(q, r)))
+    const height = genHeight(q, r);
+    const biome = genBiome(q, r, height);
+    const structure = genStructure(q, r, height, biome);
+    grid.addZone(new models.Zone(new models.Position(q, r), height, biome, structure))
   }
 }
 
@@ -63,6 +66,7 @@ export function zone2tile(timedZone, size, currentTS) {
   return new ui.Tile(
     zone.position,
     size,
+    zone.height,
     zoneColor(zone),
     zonePicture(zone),
     currentTS - time

@@ -15,8 +15,20 @@ function makeEnum(...names) {
   return theenum;
 }
 
-const Biome = makeEnum('Water', 'Swamp', 'Plain', 'Mountainous');
-const Structure = makeEnum('City', 'Forest', 'Field', 'Mountains');
+const Biome = makeEnum(
+  'Water',
+  'Beach',
+  'Swamp',
+  'Plain',
+  'Mountainous'
+);
+const Structure = makeEnum(
+  'Empty',
+  'City',
+  'Forest',
+  'Field',
+  'Mountains'
+);
 
 export default class Zone {
 
@@ -27,10 +39,11 @@ export default class Zone {
     return Structure;
   }
 
-  constructor(position, biome, structure) {
+  constructor(position, height, biome, structure) {
     this.position = position;
     this.biome = biome;
     this.structure = structure;
+    this.height = height;
   }
 
   toString() {
