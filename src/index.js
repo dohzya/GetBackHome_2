@@ -1,5 +1,5 @@
 import models from './models';
-import ui from './ui';
+import map from './map';
 
 import Random from './ext/random';
 
@@ -96,7 +96,7 @@ function start(canvas) {
   function zone2tile(timedZone, size, currentTS) {
     const time = timedZone.time;
     const zone = timedZone.item;
-    return new ui.Tile(
+    return new map.Tile(
       zone.position,
       zone.height,
       zoneColor(zone),
@@ -105,7 +105,7 @@ function start(canvas) {
     );
   }
 
-  const view = new ui.View(canvas, MAXQ, MAXR, SIZE)
+  const view = new map.View(canvas, MAXQ, MAXR, SIZE)
   let TS = 1;
 
   let snapshot = new models.Snapshot();
@@ -124,7 +124,7 @@ function start(canvas) {
   let mouseMoved = false;
   let oldMousePoint = undefined;
   function eventPoint(e) {
-    return new ui.Point(e.clientX, e.clientY);
+    return new map.Point(e.clientX, e.clientY);
   }
   canvas.onmousedown = function (e) {
     oldMousePoint = eventPoint(e);
