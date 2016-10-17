@@ -114,7 +114,7 @@ export default class View {
     this.redraw();
   }
   changeSize(delta) {
-    const qtt = delta > 0 ? 1 : -1;
+    const qtt = Math[delta > 0 ? 'ceil' : 'floor'](delta / 10);
     const newSize = this.size + qtt;
     if (qtt < 0 && newSize > 5 || qtt > 0 && newSize < 60) {
       const oldCenterPt = new Point(this.width/2 - this.offsetX, this.height/2 - this.offsetY);
