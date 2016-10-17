@@ -25,7 +25,7 @@ module.exports = {
         ],
         "block-scoped-var": "error",
         "block-spacing": "error",
-        "brace-style": "error",
+        "brace-style": "off",
         "callback-return": "error",
         "camelcase": "error",
         "comma-dangle": [
@@ -50,7 +50,7 @@ module.exports = {
         ],
         "consistent-return": "error",
         "consistent-this": "error",
-        "curly": "error",
+        "curly": "off",
         "default-case": "error",
         "dot-location": [
             "error",
@@ -110,10 +110,11 @@ module.exports = {
         "no-extra-bind": "error",
         "no-extra-label": "error",
         "no-extra-parens": "off",
+        "no-fallthrough"
         "no-floating-decimal": "error",
         "no-implicit-globals": "error",
         "no-implied-eval": "error",
-        "no-inline-comments": "error",
+        "no-inline-comments": "off",
         "no-invalid-this": "error",
         "no-iterator": "error",
         "no-label-var": "error",

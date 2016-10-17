@@ -62,6 +62,14 @@ function hexToPixel(h, size) {
   return {x, y};
 }
 
+function updateSize(p, oldSize, newSize) {
+  const q = (p.x * Math.sqrt(3)/3 - p.y / 3) / oldSize;
+  const r = p.y * 2/3 / oldSize;
+  const x = Math.round(newSize * Math.sqrt(3) * (q + r/2));
+  const y = Math.round(newSize * 3/2 * r);
+  return {x, y};
+}
+
 function buildPoints(px, py, size) {
   var points = [];
   for (let i = 0; i < 6; ++i) {
@@ -72,6 +80,8 @@ function buildPoints(px, py, size) {
 }
 
 export default {
+  hexToPixel,
+  updateSize,
   pixelToPosition(p, size) {
     return pixelToHex(p, size);
   },

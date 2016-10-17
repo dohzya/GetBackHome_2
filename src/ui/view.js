@@ -18,7 +18,7 @@ function getWidth() {
 }
 
 export default class View {
-  constructor(canvas, size) {
+  constructor(canvas, maxq, maxr, size) {
     const width = Math.floor(getWidth() * 0.8);
     const height = getHeight();
     canvas.setAttribute("width", width + "px");
@@ -28,10 +28,14 @@ export default class View {
 
     this.width = width;
     this.height = height;
-    this.offsetX = this.width / 2;
-    this.offsetY = this.height / 2;
+
+    const centerPt = Hex.hexToPixel({q: maxq * (1/4), r: maxr * (1/8)}, size)
+    this.offsetX = centerPt.x;
+    this.offsetY = centerPt.y;
+
     this.ctx = canvas.getContext('2d');
     this.size = size;
+
     this.clear();
   }
   clear() {
@@ -55,7 +59,12 @@ export default class View {
     );
   }
   displayTiles(tiles) {
-    for (let tile of tiles) {
+    if (tiles) {
+      this.lastTiles = tiles;
+    }
+    for (let tile of this.lastTiles) {
+
+      const center = tile.center(this.size);
 
       // display background and border
       const points = tile.corners(this.size);
@@ -67,26 +76,32 @@ export default class View {
       }
       this.ctx.closePath();
       this.ctx.fillStyle = `rgba(${tile.color}, ${tile.ageAlpha()})`;
-      this.ctx.strokeStyle = `rgb(0, 0, 0)`;
       this.ctx.fill();
-      this.ctx.stroke();
+      // this.ctx.strokeStyle = `rgb(0, 0, 0)`;
+      // this.ctx.stroke();
+
+      const fontSize = this.size * 4/5;
+      const debugFontSize = this.size < 30 ? 5 : 10;
 
       // display content (name for now)
       this.ctx.fillStyle = `rgba(255, 255, 255, 1)`;
-      this.ctx.font = '16px Arial';
+      this.ctx.font = `${fontSize}px Arial`;
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
-      this.ctx.fillText(tile.picture, this.localToGlobalX(tile.center.x), this.localToGlobalY(tile.center.y));
+      this.ctx.fillText(tile.picture, this.localToGlobalX(center.x), this.localToGlobalY(center.y));
 
-      // display height (debug)
-      this.ctx.font = Math.round(this.size/4) + 'px Arial';
-      this.ctx.textBaseline = 'bottom';
-      this.ctx.fillText(tile.height, this.localToGlobalX(tile.center.x), this.localToGlobalY(tile.center.y) - 10);
+      // if (this.size > 20) {
+      //   const margin = this.size / 2;
+      //   // display height (debug)
+      //   this.ctx.font = `${debugFontSize}px Arial`;
+      //   this.ctx.textBaseline = 'bottom';
+      //   this.ctx.fillText(tile.height, this.localToGlobalX(center.x), this.localToGlobalY(center.y) - margin);
 
-      // display position (debug)
-      this.ctx.font = Math.round(this.size/4) + 'px Arial';
-      this.ctx.textBaseline = 'top';
-      this.ctx.fillText(`${tile.position.q}:${tile.position.r}`, this.localToGlobalX(tile.center.x), this.localToGlobalY(tile.center.y) + 10);
+      //   // display position (debug)
+      //   this.ctx.font = `${debugFontSize}px Arial`;
+      //   this.ctx.textBaseline = 'top';
+      //   this.ctx.fillText(`${tile.position.q}:${tile.position.r}`, this.localToGlobalX(center.x), this.localToGlobalY(center.y) + margin);
+      // }
     }
   }
   getPosition(globalPt) {
@@ -96,5 +111,18 @@ export default class View {
   move(d) {
     this.offsetX += d.x;
     this.offsetY += d.y;
+    this.redraw();
+  }
+  changeSize(delta) {
+    const qtt = delta > 0 ? 1 : -1;
+    const newSize = this.size + qtt;
+    if (qtt < 0 && newSize > 5 || qtt > 0 && newSize < 60) {
+      const oldCenterPt = new Point(this.width/2 - this.offsetX, this.height/2 - this.offsetY);
+      const newCenterPt = Hex.updateSize(oldCenterPt, this.size, newSize);
+      this.offsetX += oldCenterPt.x - newCenterPt.x;
+      this.offsetY += oldCenterPt.y - newCenterPt.y;
+      this.size = newSize;
+      this.redraw();
+    }
   }
 }

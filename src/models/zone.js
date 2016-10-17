@@ -16,11 +16,21 @@ function makeEnum(...names) {
 }
 
 const Biome = makeEnum(
-  'Water',
+  'Bare',
   'Beach',
-  'Swamp',
-  'Plain',
-  'Mountainous'
+  'Grassland',
+  'Ocean',
+  'Scorched',
+  'Shrubland',
+  'Snow',
+  'SubtropicalDesert',
+  'Taiga',
+  'TemperateDeciduousForest',
+  'TemperateDesert',
+  'TemperateRainForest',
+  'TropicalRainForest',
+  'TropicalSeasonalForest',
+  'Tundra'
 );
 const Structure = makeEnum(
   'Empty',
@@ -32,12 +42,8 @@ const Structure = makeEnum(
 
 export default class Zone {
 
-  static get Biome() {
-    return Biome;
-  }
-  static get Structure() {
-    return Structure;
-  }
+  static get Biome() { return Biome; }
+  static get Structure() { return Structure; }
 
   constructor(position, height, biome, structure) {
     this.position = position;
@@ -47,7 +53,9 @@ export default class Zone {
   }
 
   toString() {
-    return `Zone(${this.position}, ${Structure[this.structure]}, ${Biome[this.biome]})`;
+    const biome = Biome[this.biome]
+    const structure = Structure[this.structure]
+    return `Zone(${this.position}, ${this.height}, ${biome}, ${structure})`;
   }
 
 }
