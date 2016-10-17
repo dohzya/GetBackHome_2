@@ -106,6 +106,7 @@ function start(canvas) {
   }
 
   const view = new map.View(canvas, MAXQ, MAXR, SIZE)
+  view.centerView();
   let TS = 1;
 
   let snapshot = new models.Snapshot();
@@ -125,6 +126,10 @@ function start(canvas) {
   let oldMousePoint = undefined;
   function eventPoint(e) {
     return new map.Point(e.clientX, e.clientY);
+  }
+  canvas.ondblclick = function (e) {
+    const mousePoint = eventPoint(e);
+    view.moveTo(mousePoint);
   }
   canvas.onmousedown = function (e) {
     oldMousePoint = eventPoint(e);

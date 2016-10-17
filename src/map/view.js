@@ -29,9 +29,8 @@ export default class View {
     this.width = width;
     this.height = height;
 
-    const centerPt = Hex.hexToPixel({q: maxq * (1/4), r: maxr * (1/8)}, size)
-    this.offsetX = centerPt.x;
-    this.offsetY = centerPt.y;
+    this.halfSize = new Point(this.width / 2, this.height / 2);
+    this.center = new Point(0, 0);
 
     this.ctx = canvas.getContext('2d');
     this.size = size;
@@ -46,25 +45,41 @@ export default class View {
     this.clear();
     this.displayTiles(tiles);
   }
+  localToGlobal(px) {
+    return new Point(
+      this.localToGlobalX(px.x),
+      this.localToGlobalY(px.y)
+    );
+  }
   localToGlobalX(px) {
-    return px + this.offsetX + Math.max(0, this.bounding.left);
+    return px + this.center.x + Math.max(0, this.bounding.left);
   }
   localToGlobalY(py) {
-    return py + this.offsetY + Math.max(0, this.bounding.top);
+    return py + this.center.y + Math.max(0, this.bounding.top);
   }
   globalToLocal(p) {
     return new Point(
-      p.x - this.offsetX - Math.max(0, this.bounding.left),
-      p.y - this.offsetY - Math.max(0, this.bounding.top)
+      p.x - this.center.x - Math.max(0, this.bounding.left),
+      p.y - this.center.y - Math.max(0, this.bounding.top)
+    );
+  }
+  isVisible(p) {
+    const lp = p.add(this.center);
+    return (
+      lp.x + this.size < 0 ||
+      lp.x - this.size < this.width ||
+      lp.y + this.size < 0 ||
+      lp.y - this.size < this.height
     );
   }
   displayTiles(tiles) {
     if (tiles) {
       this.lastTiles = tiles;
     }
+    if (!this.lastTiles) return;
     for (let tile of this.lastTiles) {
-
       const center = tile.center(this.size);
+      if (!this.isVisible(center)) continue;
 
       // display background and border
       const points = tile.corners(this.size);
@@ -109,20 +124,25 @@ export default class View {
     return Hex.pixelToPosition(localPt, this.size);
   }
   move(d) {
-    this.offsetX += d.x;
-    this.offsetY += d.y;
+    this.center = this.center.add(d);
+    this.redraw();
+  }
+  moveTo(d) {
+    this.center = this.center.diff(d).add(this.halfSize);
     this.redraw();
   }
   changeSize(delta) {
     const qtt = Math[delta > 0 ? 'ceil' : 'floor'](delta / 10);
     const newSize = this.size + qtt;
-    if (qtt < 0 && newSize > 5 || qtt > 0 && newSize < 60) {
-      const oldCenterPt = new Point(this.width/2 - this.offsetX, this.height/2 - this.offsetY);
+    if (qtt < 0 && newSize > 2 || qtt > 0 && newSize < 80) {
+      const oldCenterPt = this.halfSize.diff(this.center);
       const newCenterPt = Hex.updateSize(oldCenterPt, this.size, newSize);
-      this.offsetX += oldCenterPt.x - newCenterPt.x;
-      this.offsetY += oldCenterPt.y - newCenterPt.y;
+      this.center = this.center.add(oldCenterPt).diff(newCenterPt);
       this.size = newSize;
       this.redraw();
     }
+  }
+  centerView() {
+    this.moveTo(this.localToGlobal(Hex.hexToPixel({q: 0, r: 0}, this.size)));
   }
 }

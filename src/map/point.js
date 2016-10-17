@@ -4,7 +4,10 @@ export default class Point {
     this.y = Math.round(y);
   }
 
+  add(pt) {
+    return new Point(this.x + pt.x, this.y + pt.y);
+  }
   diff(pt) {
-    return {x: this.x - pt.x, y: this.y - pt.y};
+    return new Point(this.x - pt.x, this.y - pt.y);
   }
 }
