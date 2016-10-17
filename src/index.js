@@ -34,21 +34,17 @@ function start(canvas) {
   const MAXR = Number(getParameterByName('maxr')) || 60;
   const SIZE = Number(getParameterByName('size')) || 21;
 
-  models.Grid = class {
-    constructor() {
-      this.zones = [];
-    }
+  let grid = {
+    zones: [],
     get(q, r) {
       return this[models.Position.buildKey(q, r)];
-    }
+    },
     addZone(zone) {
       const key = zone.position.key();
       this.zones.push(zone);
       this[key] = zone;
-    }
+    },
   }
-
-  let grid = new models.Grid()
   for (let j = 0; j < MAXR; ++j) {
     for (let i = 0-(Math.floor(j/2)); i < MAXQ-(Math.floor(j/2)); ++i) {
       const q = i - Math.floor(MAXQ * 1/3);
@@ -105,7 +101,7 @@ function start(canvas) {
     );
   }
 
-  const view = new map.View(canvas, MAXQ, MAXR, SIZE)
+  const view = map.View(canvas, MAXQ, MAXR, SIZE);
   view.centerView();
   let TS = 1;
 
