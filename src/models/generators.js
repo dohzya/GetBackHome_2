@@ -105,7 +105,7 @@ function genStructure(rng) {
     random: rng,
   });
   return (q, r, height, biome) => {
-    if (q == 0 && r == 0) return Zone.Structure.City;
+    if (q === 0 && r === 0) return Zone.Structure.City;
     const val = gen.in3D(q, r, ZONE_STRUCTURE);
     switch (biome) {
 
