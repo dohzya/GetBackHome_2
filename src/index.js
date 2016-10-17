@@ -30,8 +30,8 @@ function start(canvas) {
     .addPerson(models.Person.random(rng))
     .move(1, 2);
 
-  const MAXQ = Number(getParameterByName('maxq')) || 40;
-  const MAXR = Number(getParameterByName('maxr')) || 40;
+  const MAXQ = Number(getParameterByName('maxq')) || 60;
+  const MAXR = Number(getParameterByName('maxr')) || 60;
   const SIZE = Number(getParameterByName('size')) || 21;
 
   models.Grid = class {
