@@ -6,7 +6,7 @@ import snabbdomProps from 'snabbdom/modules/props';
 import snabbdomStyle from 'snabbdom/modules/style';
 import snabbdomAttributes from 'snabbdom/modules/attributes';
 
-import Point from '../map/point';
+import map from './map';
 
 function teamComponent(team) {
   return h('li', team.item.name);
@@ -45,7 +45,7 @@ function mapComponent(view, gameEngine, theme) {
     connect({on}) {
 
       function eventPoint(e) {
-        return new Point(e.clientX, e.clientY);
+        return new map.Point(e.clientX, e.clientY);
       }
 
       on(dblclick, (state, e) => {
@@ -148,7 +148,8 @@ const snabbdomModules = [
 ];
 
 export default {
-  start({elm, view, gameEngine, theme}) {
+  start({elm, gameEngine, theme, size}) {
+    const view = map.View(gameEngine.maxq, gameEngine.maxr, size)
     startApp({app: appComponent(view, gameEngine, theme), snabbdomModules, elm});
   },
 };

@@ -1,5 +1,5 @@
 import Zone from './models/zone';
-import Tile from './map/tile';
+import Tile from './ui/map/tile';
 
 function zoneColor(zone) {
   switch (zone.biome) {

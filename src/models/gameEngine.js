@@ -2,9 +2,13 @@ import Snapshot from './snapshot';
 import Team from './team';
 import Position from './position';
 import Person from './person';
+import World from './world';
 
-function build(world) {
+function build(opts) {
+  const world = World.build(opts);
   const engine = {
+    get maxq() { return world.grid.maxq },
+    get maxr() { return world.grid.maxr },
     snapshot: new Snapshot(),
     selectZone({q, r}) {
       const zone = world.grid.get(q, r);

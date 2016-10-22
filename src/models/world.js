@@ -3,7 +3,7 @@ import Grid from './grid';
 import Position from './position';
 import Zone from './zone';
 
-function build(rng, maxq, maxr) {
+function build({rng, maxq, maxr}) {
   const world = {
     rng,
     timestamp: 0,

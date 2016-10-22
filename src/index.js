@@ -1,7 +1,6 @@
 import Random from './ext/random';
 
 import models from './models';
-import map from './map';
 import ui from './ui';
 import Theme from './theme';
 
@@ -30,16 +29,18 @@ function start(elm) {
 
   console.log(`seed is ${params.seed}`);
 
-  const world = models.World.build(Random(params.seed), params.maxq, params.maxr);
-  const gameEngine = models.GameEngine.build(world);
-  const view = map.View(world.maxq, world.maxr, params.size);
+  const gameEngine = models.GameEngine.build({
+    rng: Random(params.seed),
+    maxq: params.maxq,
+    maxr: params.maxr,
+  });
   const theme = Theme.build();
 
   ui.start({
     elm,
-    view,
     gameEngine,
     theme,
+    size: params.size,
   });
 }
 
