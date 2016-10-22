@@ -22,6 +22,11 @@ function build(world) {
       world.teams.push(team);
       return team;
     },
+    allTiles(theme) {
+      return this.snapshot.allZones().map(timedZone =>
+        theme.zone2tile(timedZone, world.timestamp)
+      );
+    },
   };
   // demo
   for (let zone of world.grid.zones) {

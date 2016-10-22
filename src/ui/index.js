@@ -6,7 +6,7 @@ import snabbdomProps from 'snabbdom/modules/props';
 import snabbdomStyle from 'snabbdom/modules/style';
 import snabbdomAttributes from 'snabbdom/modules/attributes';
 
-import map from '../map';
+import Point from '../map/point';
 
 function teamComponent(team) {
   return h('li', team.item.name);
@@ -23,7 +23,7 @@ function teamsComponent(gameEngine) {
   });
 }
 
-function mapComponent(view, gameEngine, allTiles) {
+function mapComponent(view, gameEngine, theme) {
   const dblclick = Message('map:dblclick');
   const mousedown = Message('map:mousedown');
   const mousemove = Message('map:mousemove');
@@ -31,7 +31,7 @@ function mapComponent(view, gameEngine, allTiles) {
   const wheel = Message('map:wheel');
 
   function redraw() {
-    view.redraw(allTiles());
+    view.redraw(gameEngine.allTiles(theme));
   }
 
   return Component({
@@ -45,7 +45,7 @@ function mapComponent(view, gameEngine, allTiles) {
     connect({on}) {
 
       function eventPoint(e) {
-        return new map.Point(e.clientX, e.clientY);
+        return new Point(e.clientX, e.clientY);
       }
 
       on(dblclick, (state, e) => {
@@ -126,14 +126,14 @@ function panelComponent(gameEngine) {
   });
 }
 
-function appComponent(view, gameEngine, allTiles) {
+function appComponent(view, gameEngine, theme) {
   return Component({
     name: 'app',
     initState() {},
     connect() {},
     render() {
       return h('div', {id: 'app'}, [
-        mapComponent(view, gameEngine, allTiles),
+        mapComponent(view, gameEngine, theme),
         panelComponent(gameEngine),
       ]);
     },
@@ -148,7 +148,7 @@ const snabbdomModules = [
 ];
 
 export default {
-  start({elm, view, gameEngine, allTiles}) {
-    startApp({app: appComponent(view, gameEngine, allTiles), snabbdomModules, elm});
+  start({elm, view, gameEngine, theme}) {
+    startApp({app: appComponent(view, gameEngine, theme), snabbdomModules, elm});
   },
 };
