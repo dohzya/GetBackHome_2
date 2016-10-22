@@ -17,22 +17,31 @@ function getWidth() {
   return document.body.clientWidth;
 }
 
-export default function(canvas, maxq, maxr, size) {
+export default function(maxq, maxr, size) {
   const width = Math.floor(getWidth() * 0.8);
   const height = getHeight();
-  canvas.setAttribute("width", width + "px");
-  canvas.setAttribute("height", height + "px");
 
-  const view = {
+  return {
 
     width,
     height,
     size,
-    bounding: canvas.getBoundingClientRect(),
+
     halfSize: new Point(width/2, height/2),
     center: new Point(0, 0),
-    ctx: canvas.getContext('2d'),
 
+    hasBeenCentered: false,
+    setCanvas(canvas) {
+      canvas.setAttribute("width", width + "px");
+      canvas.setAttribute("height", height + "px");
+      this.bounding = canvas.getBoundingClientRect();
+      this.ctx = canvas.getContext('2d');
+      this.clear();
+      if (!this.hasBeenCentered) {
+        this.hasBeenCentered = true;
+        this.centerView();
+      }
+    },
     clear() {
       this.ctx.fillStyle = 'rgb(0, 0, 0)';
       this.ctx.fillRect(0, 0, this.width, this.height);
@@ -140,8 +149,4 @@ export default function(canvas, maxq, maxr, size) {
       this.moveTo(this.localToGlobal(Hex.hexToPixel({q: 0, r: 0}, this.size)));
     },
   };
-
-  view.clear();
-
-  return view;
 }

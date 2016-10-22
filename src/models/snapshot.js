@@ -1,5 +1,6 @@
+import R from 'ramda';
+
 import Position from "./position";
-import Zone from "./zone";
 
 class SnapshotItem {
 
@@ -12,34 +13,59 @@ class SnapshotItem {
 
 }
 
+class SnapshotedCollection {
+  constructor() {
+    this.items = {};
+  }
+  add(key, item, time) {
+    const existing = this.items[key];
+    if (!existing || existing.time < time) {
+      this.items[key] = new SnapshotItem(time, item);
+    }
+  }
+  get(key) {
+    return this.items[key];
+  }
+  all() {
+    return R.values(this.items);
+  }
+
+}
+
 export default class Snapshot {
 
-  static Item() { return SnapshotItem; };
+  static Item() { return SnapshotItem; }
 
   constructor() {
-    this.timedZones = {};
+    this.zones = new SnapshotedCollection();
+    this.teams = new SnapshotedCollection();
   }
 
   addZone(zone, time) {
     const key = zone.position.key();
-    const existing = this.timedZones[key];
-    if (!existing || existing.time < time) {
-      this.timedZones[key] = new SnapshotItem(time, zone);
-    }
+    this.zones.add(key, zone, time);
   }
-  get(x, y) {
-    return this.timedZones[Position.buildKey(x, y)];
+  getZone(x, y) {
+    return this.zones.get(Position.buildKey(x, y));
   }
-  all() {
-    const zones = [];
-    for (let key of Object.keys(this.timedZones)) {
-      zones.push(this.timedZones[key]);
-    }
-    return zones;
+  allZones() {
+    return this.zones.all();
   }
+
+  addTeam(team, time) {
+    this.teams.add(team.name, team, time);
+  }
+  getTeam(teamName) {
+    return this.teams.get(teamName);
+  }
+  allTeams() {
+    return this.teams.all();
+  }
+
   toString() {
-    let txt = Object.keys(this.timedZones).map(key => this.timedZones[key]).join(', ');
-    return `Snapshot(${txt})`;
+    const zones = this.zones.all();
+    const teams = this.teams.all();
+    return `Snapshot(${zones}, ${teams})`;
   }
 
 }

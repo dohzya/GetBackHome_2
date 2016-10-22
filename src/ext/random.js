@@ -5,10 +5,10 @@ export default function (seed) {
   return function (min, max) {
     if (min !== undefined && max !== undefined) {
       return Math.floor(rnf() * max + min);
-    } else if (min !== undefined) {
-      return Math.floor(rnf() * min);
-    } else {
-      return rnf();
     }
+    if (min !== undefined) {
+      return Math.floor(rnf() * min);
+    }
+    return rnf();
   }
 }

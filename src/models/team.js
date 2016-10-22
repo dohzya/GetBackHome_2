@@ -1,22 +1,20 @@
-import Position from "./position";
-import Person from "./person";
+import R from 'ramda';
 
 export default class Team {
 
-  constructor(position, people) {
+  constructor(name, position, people) {
+    this.name = name;
     this.position = position;
     this.people = people || [];
   }
 
   addPerson(person) {
-    const newPeople = this.people.slice(0); // slice(0) is optimized clone()
-    newPeople.push(person);
     return new Team(
       this.position,
-      newPeople
+      R.append(this.people, person)
     );
   }
-  alivePeople() { return this.people.filter(p => p.isAlive()); }
+  alivePeople() { return R.filter(p => p.isAlive(), this.people); }
   moveTo(x, y) {
     return new Team(
       this.position.moveTo(x, y),
