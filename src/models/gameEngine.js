@@ -5,7 +5,7 @@ import Person from './person';
 import World from './world';
 
 function build(opts) {
-  const world = World.build(opts);
+  const world = new World(opts); // private
   const engine = {
     get maxq() { return world.grid.maxq },
     get maxr() { return world.grid.maxr },
