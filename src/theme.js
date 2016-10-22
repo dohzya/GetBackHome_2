@@ -3,11 +3,6 @@ import Tile from './ui/map/tile';
 
 function zoneColor(zone) {
   switch (zone.biome) {
-    case Zone.Biome.Water: return '127, 169, 181';
-    case Zone.Biome.Swamp: return '105, 74, 68';
-    case Zone.Biome.Plain: return '127, 168, 79';
-    case Zone.Biome.Mountainous: return '127, 127, 127';
-
     case Zone.Biome.Bare: return '136, 136, 136';
     case Zone.Biome.Beach: return '85, 85, 85';
     case Zone.Biome.Grassland: return '137, 169, 90';
