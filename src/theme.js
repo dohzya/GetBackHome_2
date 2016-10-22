@@ -6,7 +6,17 @@ function zoneColor(zone) {
     case Zone.Biome.Bare: return '136, 136, 136';
     case Zone.Biome.Beach: return '85, 85, 85';
     case Zone.Biome.Grassland: return '137, 169, 90';
-    case Zone.Biome.Ocean: return '68, 69, 120';
+    case Zone.Biome.Ocean:
+      {
+        // darker = '40, 55, 105'
+        // lighter = '95, 128, 238'
+        const height = Math.max(zone.height, -1000);
+        const r = Math.floor(40 + (95 - 40) * (height / 1000));
+        const g = Math.floor(55 + (128 - 55) * (height / 1000));
+        const b = Math.floor(105 + (238 - 105) * (height / 1000));
+        return `${r}, ${g}, ${b}`;
+        // simple version: return '68, 69, 120';
+      }
     case Zone.Biome.Scorched: return '85, 85, 85';
     case Zone.Biome.Shrubland: return '136, 152, 120';
     case Zone.Biome.Snow: return '221, 221, 228';
