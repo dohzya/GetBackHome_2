@@ -18,7 +18,9 @@ function teamsComponent(gameEngine) {
     initState() {},
     connect() {},
     render() {
-      return h('ul', {id: 'teams'}, gameEngine.snapshot.allTeams().map(teamComponent));
+      return h('ul.teams',
+        gameEngine.snapshot.allTeams().map(teamComponent)
+      );
     },
   });
 }
@@ -94,7 +96,7 @@ function mapComponent(view, gameEngine, theme) {
       });
     },
     render() {
-      return h('canvas', {
+      return h('canvas.map', {
         events: {
           dblclick,
           mousedown,
@@ -119,7 +121,7 @@ function panelComponent(gameEngine) {
     initState() {},
     connect() {},
     render() {
-      return h('sidebar', {id: 'panel'}, [
+      return h('sidebar.panel', [
         teamsComponent(gameEngine),
       ]);
     },
@@ -132,7 +134,7 @@ function appComponent(view, gameEngine, theme) {
     initState() {},
     connect() {},
     render() {
-      return h('div', {id: 'app'}, [
+      return h('div.app', [
         mapComponent(view, gameEngine, theme),
         panelComponent(gameEngine),
       ]);

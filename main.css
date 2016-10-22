@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+canvas {
+    cursor: pointer;
+}
+
+.app {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+component[name='map'] {
+    order: 1;
+    flex: 2 1 0;
+}
+component[name='panel'] {
+    order: 2;
+    flex: 1 1 0;
+    margin: 0 auto;
+}

@@ -2,7 +2,7 @@ import Hex from '../../hex';
 
 import Point from './point';
 
-function getHeight() {
+function getWindowHeight() {
   const body = document.body;
   const html = document.documentElement;
   return Math.max(
@@ -13,25 +13,21 @@ function getHeight() {
     html.offsetHeight
   );
 }
-function getWidth() {
-  return document.body.clientWidth;
-}
 
 export default function(maxq, maxr, size) {
-  const width = Math.floor(getWidth() * 0.8);
-  const height = getHeight();
 
   return {
 
-    width,
-    height,
     size,
-
-    halfSize: new Point(width/2, height/2),
     center: new Point(0, 0),
 
     hasBeenCentered: false,
     setCanvas(canvas) {
+      const width = Math.floor(canvas.parentElement.clientWidth);
+      const height = getWindowHeight();
+      this.width = width;
+      this.height = height;
+      this.halfSize = new Point(width/2, height/2);
       canvas.setAttribute("width", width + "px");
       canvas.setAttribute("height", height + "px");
       this.bounding = canvas.getBoundingClientRect();
