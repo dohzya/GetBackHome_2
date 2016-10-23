@@ -1,5 +1,5 @@
 import R from 'ramda';
-import {Component, h, Message, startApp} from 'kaiju';
+import {Component, h, Message, startApp, log} from 'kaiju';
 
 import snabbdomClass from 'snabbdom/modules/class';
 import snabbdomProps from 'snabbdom/modules/props';
@@ -8,18 +8,59 @@ import snabbdomAttributes from 'snabbdom/modules/attributes';
 
 import map from './map';
 
-function teamComponent(team) {
-  return h('li', team.item.name);
+function teamComponent(teamItem, isSelected, teamMessages) {
+  const click = Message('team:click');
+  const team = teamItem.item;
+  return Component({
+    name: 'team',
+    props: {
+      isSelected
+    },
+    initState() {},
+    connect({on, msg}) {
+      on(click, () => {
+        msg.sendToParent(teamMessages.click(team.name));
+      });
+    },
+    render({props}) {
+      return h(
+        'li.team',
+        {
+          events: {click},
+          class: {
+            selected: props.isSelected,
+          },
+        },
+        team.name
+      );
+    },
+  });
 }
 
 function teamsComponent(gameEngine) {
+  const messages = {
+    click: Message('teams:select'),
+  };
   return Component({
     name: 'teams',
-    initState() {},
-    connect() {},
-    render() {
+    initState() {
+      return {
+        selected: undefined,
+      };
+    },
+    connect({on}) {
+      on(messages.click, (state, teamName) =>
+        R.merge(state, {selected: teamName})
+      );
+    },
+    render({state}) {
+      function isSelected(timedTeam) {
+        return state.selected === timedTeam.item.name;
+      }
       return h('ul.teams',
-        gameEngine.snapshot.allTeams().map(teamComponent)
+        gameEngine.snapshot.allTeams().map(timedTeam =>
+          teamComponent(timedTeam, isSelected(timedTeam), messages)
+        )
       );
     },
   });
@@ -35,6 +76,8 @@ function mapComponent(view, gameEngine, theme) {
   function redraw() {
     view.redraw(gameEngine.allTiles(theme));
   }
+
+  window.addEventListener('resize', () => view.resized());
 
   return Component({
     name: 'map',
@@ -96,21 +139,25 @@ function mapComponent(view, gameEngine, theme) {
       });
     },
     render() {
-      return h('canvas.map', {
-        events: {
-          dblclick,
-          mousedown,
-          mousemove,
-          mouseup,
-          wheel,
-        },
-        hook: {
-          insert: vnode => {
-            view.setCanvas(vnode.elm);
-            redraw();
-          },
-        }
-      });
+      return h('div.map',
+        [
+          h('canvas', {
+            events: {
+              dblclick,
+              mousedown,
+              mousemove,
+              mouseup,
+              wheel,
+            },
+            hook: {
+              insert: vnode => {
+                view.setCanvas(vnode.elm);
+                redraw();
+              },
+            }
+          }),
+        ]
+      );
     },
   });
 }
@@ -151,7 +198,12 @@ const snabbdomModules = [
 
 export default {
   start({elm, gameEngine, theme, size}) {
-    const view = map.View(gameEngine.maxq, gameEngine.maxr, size)
+    const debug = gameEngine.debug;
+    if (debug) {
+      log.render = true;
+      log.message = true;
+    }
+    const view = map.View({size, debug});
     startApp({app: appComponent(view, gameEngine, theme), snabbdomModules, elm});
   },
 };

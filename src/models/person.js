@@ -10,7 +10,10 @@ export default class Person {
     this.lifeInfos = lifeInfos;
   }
 
-  isAlive() { return this.lifeInfos.life > 0; }
+  copy(lifeInfos) { return new Person(this.name, this.isMale, lifeInfos); }
+  isAlive() { return this.lifeInfos.isAlive(); }
+  hurt(pv) { return this.copy(this.lifeInfos.hurt(pv)); }
+  heal(pv) { return this.copy(this.lifeInfos.heal(pv)); }
   toString() {
     return `Person(${this.name}, ${this.isMale ? '♂' : '♀'}, ${this.lifeInfos})`;
   }

@@ -2,41 +2,35 @@ import Hex from '../../hex';
 
 import Point from './point';
 
-function getWindowHeight() {
-  const body = document.body;
-  const html = document.documentElement;
-  return Math.max(
-    body.scrollHeight,
-    body.offsetHeight,
-    html.clientHeight,
-    html.scrollHeight,
-    html.offsetHeight
-  );
-}
-
-export default function(maxq, maxr, size) {
+export default function({size, debug}) {
 
   return {
 
     size,
     center: new Point(0, 0),
+    debug,
 
     hasBeenCentered: false,
     setCanvas(canvas) {
-      const width = Math.floor(canvas.parentElement.clientWidth);
-      const height = getWindowHeight();
-      this.width = width;
-      this.height = height;
-      this.halfSize = new Point(width/2, height/2);
-      canvas.setAttribute("width", width + "px");
-      canvas.setAttribute("height", height + "px");
-      this.bounding = canvas.getBoundingClientRect();
+      this.canvas = canvas;
+      this.resized(false);
       this.ctx = canvas.getContext('2d');
       this.clear();
       if (!this.hasBeenCentered) {
         this.hasBeenCentered = true;
         this.centerView();
       }
+    },
+    resized(redraw=true) {
+      const width = Math.floor(this.canvas.parentElement.clientWidth);
+      const height = Math.floor(this.canvas.parentElement.clientHeight);
+      this.width = width;
+      this.height = height;
+      this.halfSize = new Point(width/2, height/2);
+      this.canvas.setAttribute('width', width + 'px');
+      this.canvas.setAttribute('height', height + 'px');
+      this.bounding = this.canvas.getBoundingClientRect();
+      if (redraw) this.redraw();
     },
     clear() {
       this.ctx.fillStyle = 'rgb(0, 0, 0)';
@@ -103,19 +97,20 @@ export default function(maxq, maxr, size) {
         this.ctx.textBaseline = 'middle';
         this.ctx.fillText(tile.picture, this.localToGlobalX(center.x), this.localToGlobalY(center.y));
 
-        // if (this.size > 20) {
-        //   const debugFontSize = this.size < 30 ? 5 : 10;
-        //   const margin = this.size / 2;
-        //   // display height (debug)
-        //   this.ctx.font = `${debugFontSize}px Arial`;
-        //   this.ctx.textBaseline = 'bottom';
-        //   this.ctx.fillText(tile.height, this.localToGlobalX(center.x), this.localToGlobalY(center.y) - margin);
+        if (this.debug && this.size > 20) {
+          const debugFontSize = this.size < 30 ? 5 : 10;
+          const margin = this.size / 2;
 
-        //   // display position (debug)
-        //   this.ctx.font = `${debugFontSize}px Arial`;
-        //   this.ctx.textBaseline = 'top';
-        //   this.ctx.fillText(`${tile.position.q}:${tile.position.r}`, this.localToGlobalX(center.x), this.localToGlobalY(center.y) + margin);
-        // }
+          // display height
+          this.ctx.font = `${debugFontSize}px Arial`;
+          this.ctx.textBaseline = 'bottom';
+          this.ctx.fillText(tile.height, this.localToGlobalX(center.x), this.localToGlobalY(center.y) - margin);
+
+          // display position
+          this.ctx.font = `${debugFontSize}px Arial`;
+          this.ctx.textBaseline = 'top';
+          this.ctx.fillText(`${tile.position.q}:${tile.position.r}`, this.localToGlobalX(center.x), this.localToGlobalY(center.y) + margin);
+        }
       }
     },
     getPosition(globalPt) {

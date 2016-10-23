@@ -15,24 +15,24 @@ function getParameterByName(name) {
 }
 
 function generateSeed() {
-  return (Math.ceil(Math.random() * 10000000)).toString()
+  return (Math.ceil(Math.random() * 10000000)).toString();
 }
 
 function start(elm) {
 
-  const params = {
-    seed: getParameterByName('seed') || generateSeed(),
-    maxq: Number(getParameterByName('maxq')) || 60,
-    maxr: Number(getParameterByName('maxr')) || 60,
-    size: Number(getParameterByName('size')) || 21,
-  }
+  const seed = getParameterByName('seed') || generateSeed();
+  const maxq = Number(getParameterByName('maxq')) || 60;
+  const maxr = Number(getParameterByName('maxr')) || 60;
+  const size = Number(getParameterByName('size')) || 21;
+  const debug = getParameterByName('debug') === 'true';
 
-  console.log(`seed is ${params.seed}`);
+  console.log(`seed is ${seed}`);
 
   const gameEngine = models.GameEngine.build({
-    rng: Random(params.seed),
-    maxq: params.maxq,
-    maxr: params.maxr,
+    debug,
+    rng: Random(seed),
+    maxq,
+    maxr,
   });
   const theme = Theme.build();
 
@@ -40,10 +40,10 @@ function start(elm) {
     elm,
     gameEngine,
     theme,
-    size: params.size,
+    size,
   });
 }
 
 window.GetBackHome = {
   start,
-}
+};

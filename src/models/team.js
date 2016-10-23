@@ -5,16 +5,17 @@ export default class Team {
   constructor(name, position, people) {
     this.name = name;
     this.position = position;
-    this.people = people || [];
+    this.people = people || {};
   }
 
-  addPerson(person) {
+  withPerson(person) {
     return new Team(
       this.position,
-      R.append(this.people, person)
+      R.merge(this.people, {[person.name]: person})
     );
   }
-  alivePeople() { return R.filter(p => p.isAlive(), this.people); }
+  alivePeople() { return R.filter(p => p.isAlive(), R.values(this.people)); }
+
   moveTo(x, y) {
     return new Team(
       this.position.moveTo(x, y),
@@ -27,6 +28,7 @@ export default class Team {
       this.people
     );
   }
+
   toString() { return `Team(${this.position}, ${this.people})`; }
 
 }

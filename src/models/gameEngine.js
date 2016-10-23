@@ -7,8 +7,9 @@ import World from './world';
 function build(opts) {
   const world = new World(opts); // private
   const engine = {
-    get maxq() { return world.grid.maxq },
-    get maxr() { return world.grid.maxr },
+    debug: opts.debug,
+    get maxq() { return world.grid.maxq; },
+    get maxr() { return world.grid.maxr; },
     snapshot: new Snapshot(),
     selectZone({q, r}) {
       const zone = world.grid.get(q, r);
@@ -36,12 +37,18 @@ function build(opts) {
   for (let zone of world.grid.zones) {
     engine.snapshot.addZone(zone, world.timestamp);
   }
-  const team = engine.createTeam(new Position(2, 6), [
+  const team1 = engine.createTeam(new Position(2, 6), [
     Person.random(world.rng),
     Person.random(world.rng),
     Person.random(world.rng),
   ]);
-  engine.snapshot.addTeam(team, world.timestamp);
+  engine.snapshot.addTeam(team1, world.timestamp);
+  const team2 = engine.createTeam(new Position(0, 0), [
+    Person.random(world.rng),
+    Person.random(world.rng),
+    Person.random(world.rng),
+  ]);
+  engine.snapshot.addTeam(team2, world.timestamp);
   world.timestamp = 10;
   // -
   return engine;
@@ -49,4 +56,4 @@ function build(opts) {
 
 export default {
   build,
-}
+};

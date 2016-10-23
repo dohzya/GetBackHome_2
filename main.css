@@ -9,14 +9,53 @@ canvas {
 .app {
     display: flex;
     flex-wrap: wrap;
+    height: 100%;
+    width: 100%;
+    position: fixed;
 }
 
 component[name='map'] {
     order: 1;
     flex: 2 1 0;
+    align-self: stretch;
+    overflow: hidden;
 }
 component[name='panel'] {
     order: 2;
     flex: 1 1 0;
     margin: 0 auto;
+}
+
+.map {
+    width: 100%;
+    height: 100%;
+}
+
+.teams {
+    padding: 10px;
+    margin: 0;
+}
+
+.teams > li {
+    list-style: none;
+}
+
+.team {
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 1px;
+    margin: auto;
+    border: 2px dashed white;
+}
+.team:hover {
+    border: 2px dashed rgb(211, 211, 211);
+}
+.team.selected {
+    border: 2px dashed rgb(225, 225, 225);
+}
+
+@media (max-width: 320px), (orientation: portrait) {
+    .app {
+        flex-direction: column;
+    }
 }
